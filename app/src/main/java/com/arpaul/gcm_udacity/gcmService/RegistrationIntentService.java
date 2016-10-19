@@ -9,6 +9,8 @@ import com.arpaul.gcm_udacity.common.AppPreference;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.google.android.gms.iid.InstanceID;
 
+import java.io.IOException;
+
 /**
  * Created by Aritra on 19-10-2016.
  */
@@ -27,6 +29,15 @@ public class RegistrationIntentService extends IntentService {
         try {
             synchronized (TAG) {
                 InstanceID instanceID = InstanceID.getInstance(this);
+                try
+                {
+                    instanceID.deleteInstanceID();
+                } catch(IOException e)
+                {
+                    e.printStackTrace();
+                }
+                instanceID = InstanceID.getInstance(this);
+
                 String token = instanceID.getToken(getString(R.string.gcm_defaultSenderId), GoogleCloudMessaging.INSTANCE_ID_SCOPE, null);
 
                 new AppPreference(this).saveStringInPreference(AppPreference.GCM_TOKEN, token);
